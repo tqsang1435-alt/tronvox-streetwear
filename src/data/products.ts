@@ -9,6 +9,9 @@ export type Product = {
   description: string;
   material?: string;
   badge?: string;
+  imageScale?: number;
+  imageFit?: "contain" | "cover";
+  imagePosition?: string;
 };
 
 export const products: Product[] = [
@@ -22,7 +25,9 @@ export const products: Product[] = [
     images: ["/images/products/product-hoodie-pink.jpg"],
     description: "A heavyweight everyday hoodie designed with a relaxed architectural silhouette.",
     material: "500 GSM organic heavyweight fleece",
-    badge: "NEW DROP"
+    badge: "NEW DROP",
+    imageScale: 1.15,
+    imageFit: "contain",
   },
   {
     id: "heavyweight-black-hoodie",
@@ -34,7 +39,9 @@ export const products: Product[] = [
     images: ["/images/products/product-hoodie-black.jpg"],
     description: "A heavyweight everyday hoodie designed with a relaxed architectural silhouette.",
     material: "500 GSM organic heavyweight fleece",
-    badge: "ESSENTIAL"
+    badge: "ESSENTIAL",
+    imageScale: 1.1,
+    imageFit: "contain",
   },
   {
     id: "heavyweight-blush-sweatpants",
@@ -44,9 +51,11 @@ export const products: Product[] = [
     category: "Pants",
     sizes: ["S", "M", "L", "XL"],
     images: ["/images/products/product-sweatpants-pink.jpg"],
-    description: "Structured sweatpants balancing understated luxury with everyday utility.",
+    description: "Structured sweatpants balancing understated luxury with everyday luxury.",
     material: "500 GSM organic heavyweight fleece",
-    badge: "LIMITED"
+    badge: "LIMITED",
+    imageScale: 1.1,
+    imageFit: "contain",
   },
   {
     id: "heavyweight-black-sweatpants",
@@ -58,6 +67,8 @@ export const products: Product[] = [
     images: ["/images/products/product-sweatpants-black.jpg"],
     description: "Structured sweatpants balancing understated luxury with everyday utility.",
     material: "500 GSM organic heavyweight fleece",
-    badge: "ESSENTIAL"
+    badge: "ESSENTIAL",
+    imageScale: 1.1,
+    imageFit: "contain",
   }
 ];

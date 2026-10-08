@@ -58,136 +58,140 @@ export default function Product() {
   }
 
   return (
-    <section className="py-12 sm:py-20">
+    <section className="py-6 sm:py-12 lg:py-16">
       <div className="site-container">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="grid gap-4 sm:grid-cols-2">
-            {product.images.map(
-              (image, index) => (
-                <div
-                  key={`${image}-${index}`}
-                  className="overflow-hidden bg-[#eee8e9]"
-                >
-                  <img
-                    src={image}
-                    alt={`${product.name} ${index + 1}`}
-                    className="aspect-[3/4] h-full w-full object-cover"
-                  />
-                </div>
-              )
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 xl:gap-16 items-start">
+          
+          {/* Left: Image Gallery (56%) */}
+          <div className="w-full lg:w-[56%] flex flex-col gap-4">
+            <div className="w-full relative bg-[#F5F2F3] overflow-hidden aspect-[4/5] sm:aspect-[3/4] flex items-center justify-center">
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                style={{
+                  objectFit: product.imageFit || "contain",
+                  objectPosition: product.imagePosition || "center",
+                  transform: `scale(${product.imageScale || 1})`
+                }}
+                className="w-full h-full transform-gpu transition-transform"
+              />
+            </div>
+            
+            {product.images.length > 1 && (
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-4">
+                {product.images.map((image, index) => (
+                  <button
+                    key={`${image}-${index}`}
+                    className="aspect-[3/4] sm:aspect-square bg-[#F5F2F3] overflow-hidden hover:opacity-80 transition-opacity flex items-center justify-center"
+                  >
+                    <img
+                      src={image}
+                      alt={`${product.name} thumbnail ${index + 1}`}
+                      style={{
+                        objectFit: product.imageFit || "contain",
+                        objectPosition: product.imagePosition || "center",
+                        transform: `scale(${product.imageScale || 1})`
+                      }}
+                      className="w-full h-full transform-gpu"
+                    />
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="eyebrow text-gray">
-              {product.category}
-            </p>
-
-            <h1 className="editorial-title mt-5 text-5xl sm:text-6xl">
-              {product.name}
-            </h1>
-
-            <p className="mt-6 text-lg">
-              ${product.price}
-            </p>
-
-            <p className="mt-8 max-w-md text-sm leading-7 text-gray">
-              {product.description}
-            </p>
-
-            <div className="mt-10">
-              <p className="eyebrow">
-                Color
+          {/* Right: Product Info (44%) */}
+          <div className="w-full lg:w-[44%] lg:sticky lg:top-28">
+            <div className="max-w-md xl:max-w-lg lg:pl-4 xl:pl-8">
+              <p className="eyebrow text-gray">
+                {product.category}
               </p>
 
-              <p className="mt-3 text-sm">
-                {product.color}
+              <h1 className="editorial-title mt-2 text-4xl sm:text-5xl">
+                {product.name}
+              </h1>
+
+              <p className="mt-4 text-lg font-medium">
+                ${product.price}
               </p>
-            </div>
 
-            <div className="mt-8">
-              <div className="flex items-center justify-between">
-                <p className="eyebrow">
-                  Size
-                </p>
+              <p className="mt-5 text-sm leading-relaxed text-gray">
+                {product.description}
+              </p>
 
-                <button className="text-xs underline min-h-[44px] min-w-[44px] inline-flex items-center justify-end">
-                  Size Guide
-                </button>
+              <div className="mt-6 border-t border-border pt-6">
+                <p className="eyebrow mb-2">Color</p>
+                <p className="text-sm font-medium">{product.color}</p>
               </div>
 
-              <div className="mt-4 grid grid-cols-4 gap-2">
-                {product.sizes.map(
-                  (size) => (
+              <div className="mt-5">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="eyebrow">Size</p>
+                  <button className="text-xs underline hover:text-gray transition-colors">
+                    Size Guide
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2">
+                  {product.sizes.map((size) => (
                     <button
                       key={size}
-                      onClick={() =>
-                        setSelectedSize(size)
-                      }
-                      className={`h-12 border text-sm ${
+                      onClick={() => setSelectedSize(size)}
+                      className={`h-11 border text-sm font-medium transition-colors ${
                         selectedSize === size
                           ? "border-black bg-black text-white"
-                          : "border-border hover:border-black transition-colors"
+                          : "border-border hover:border-black"
                       }`}
                     >
                       {size}
                     </button>
-                  )
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
-            
-            <div className="mt-8">
-              <p className="eyebrow">
-                Quantity
-              </p>
               
-              <div className="mt-4 flex items-center border border-border w-32 h-12">
-                <button 
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="flex-1 flex justify-center items-center h-full hover:bg-gray/5 transition-colors"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus size={14} />
-                </button>
-                <span className="w-10 text-center text-sm">{quantity}</span>
-                <button 
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="flex-1 flex justify-center items-center h-full hover:bg-gray/5 transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  <Plus size={14} />
-                </button>
+              <div className="mt-5">
+                <p className="eyebrow mb-2">Quantity</p>
+                <div className="flex items-center border border-border w-32 h-11">
+                  <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="flex-1 flex justify-center items-center h-full hover:bg-black/5 transition-colors"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus size={14} />
+                  </button>
+                  <span className="w-10 text-center text-sm font-medium">{quantity}</span>
+                  <button 
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="flex-1 flex justify-center items-center h-full hover:bg-black/5 transition-colors"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus size={14} />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <button
-              onClick={() =>
-                addToCart(
-                  product,
-                  selectedSize,
-                  quantity
-                )
-              }
-              className="mt-8 flex h-14 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-[0.14em] text-white hover:bg-black/90 transition-colors"
-            >
-              Add to Bag
-            </button>
+              <button
+                onClick={() => addToCart(product, selectedSize, quantity)}
+                className="mt-8 flex h-14 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-black/90 transition-colors"
+              >
+                Add to Bag
+              </button>
 
-            <div className="mt-10 border-t border-border">
-              <Accordion title="Material">
-                {product.material}
-              </Accordion>
+              <div className="mt-8 border-t border-border">
+                <Accordion title="Material" defaultOpen>
+                  {product.material}
+                </Accordion>
 
-              <Accordion title="Shipping">
-                Complimentary worldwide shipping on all orders.
-                Standard delivery takes 3-5 business days. Express options available at checkout.
-              </Accordion>
+                <Accordion title="Shipping">
+                  Complimentary worldwide shipping on all orders.
+                  Standard delivery takes 3-5 business days. Express options available at checkout.
+                </Accordion>
 
-              <Accordion title="Returns">
-                We accept returns within 14 days of delivery. Items must be unworn, 
-                unwashed, and with all original tags attached.
-              </Accordion>
+                <Accordion title="Returns">
+                  We accept returns within 14 days of delivery. Items must be unworn, 
+                  unwashed, and with all original tags attached.
+                </Accordion>
+              </div>
             </div>
           </div>
         </div>
