@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Plus, Minus, ChevronDown, ChevronUp } from "lucide-react";
 import { products } from "../data/products";
@@ -28,17 +28,55 @@ function Accordion({ title, children, defaultOpen = false }: { title: string, ch
 export default function Product() {
   const { id } = useParams();
 
-  const product = products.find(
-    (item) => item.id === id
-  );
+  const [product, setProduct] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { addToCart } = useCart();
 
-  const [selectedSize, setSelectedSize] = useState(
-    product?.sizes[0] ?? ""
-  );
-  
+  const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadProduct() {
+      try {
+        const res = await fetch(`http://localhost:5000/api/products/slug/${id}`);
+        const data = await res.json();
+        if (data.success && data.data) {
+          // Normalize API data to match frontend expectations
+          const p = data.data;
+          setProduct({
+            ...p,
+            id: p.slug,
+            category: p.category?.name || 'Category',
+            sizes: [...new Set(p.variants.map((v: any) => v.size))],
+            color: p.variants[0]?.color || 'Color',
+            images: p.images.map((img: any) => img.url),
+            imageScale: 1.15,
+            imageFit: "contain",
+            rawVariants: p.variants
+          });
+          setSelectedSize(p.variants[0]?.size || "");
+        } else {
+          // Fallback to local data if API fails
+          const localProduct = products.find((item) => item.id === id);
+          setProduct(localProduct || null);
+          if (localProduct) setSelectedSize(localProduct.sizes[0]);
+        }
+      } catch (err) {
+        const localProduct = products.find((item) => item.id === id);
+        setProduct(localProduct || null);
+        if (localProduct) setSelectedSize(localProduct.sizes[0]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadProduct();
+  }, [id]);
+
+  if (isLoading) {
+    return <section className="site-container py-32"><p>Loading...</p></section>;
+  }
 
   if (!product) {
     return (
@@ -56,6 +94,16 @@ export default function Product() {
       </section>
     );
   }
+
+  const handleAddToBag = async () => {
+    setError(null);
+    try {
+      const variant = product.rawVariants?.find((v: any) => v.size === selectedSize);
+      await addToCart(product, selectedSize, quantity, variant?.id);
+    } catch (err: any) {
+      setError(err.message || 'Unable to add to bag');
+    }
+  };
 
   return (
     <section className="py-6 sm:py-12 lg:py-16">
@@ -79,7 +127,7 @@ export default function Product() {
             
             {product.images.length > 1 && (
               <div className="grid grid-cols-4 sm:grid-cols-5 gap-4">
-                {product.images.map((image, index) => (
+                {product.images.map((image: string, index: number) => (
                   <button
                     key={`${image}-${index}`}
                     className="aspect-[3/4] sm:aspect-square bg-[#F5F2F3] overflow-hidden hover:opacity-80 transition-opacity flex items-center justify-center"
@@ -133,7 +181,7 @@ export default function Product() {
                 </div>
 
                 <div className="grid grid-cols-4 gap-2">
-                  {product.sizes.map((size) => (
+                  {product.sizes.map((size: string) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
@@ -171,11 +219,17 @@ export default function Product() {
               </div>
 
               <button
-                onClick={() => addToCart(product, selectedSize, quantity)}
+                onClick={handleAddToBag}
                 className="mt-8 flex h-14 w-full items-center justify-center bg-black text-xs font-semibold uppercase tracking-widest text-white hover:bg-black/90 transition-colors"
               >
                 Add to Bag
               </button>
+
+              {error && (
+                <p className="mt-4 text-[10px] tracking-widest text-[#E9A5B7] uppercase text-center font-semibold">
+                  {error}
+                </p>
+              )}
 
               <div className="mt-8 border-t border-border">
                 <Accordion title="Material" defaultOpen>

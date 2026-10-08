@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function CartDrawer() {
-  const { isCartOpen, closeCart, items, updateQuantity, removeFromCart, subtotal } = useCart();
+  const { isCartOpen, closeCart, items, updateQuantity, removeFromCart, subtotal, error, isLoading } = useCart();
 
   useEffect(() => {
     if (isCartOpen) {
@@ -63,7 +63,13 @@ export default function CartDrawer() {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
+        {error && (
+          <div className="px-6 md:px-8 py-3 border-b border-border">
+            <p className="text-xs tracking-widest text-[#E9A5B7] uppercase text-center font-semibold">{error}</p>
+          </div>
+        )}
+
+        <div className={`flex-1 overflow-y-auto p-6 md:p-8 space-y-8 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
           {items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-gray space-y-4">
               <ShoppingBag size={48} strokeWidth={1} />
