@@ -10,6 +10,13 @@ import Shop from "./pages/Shop";
 import Collections from "./pages/Collections";
 import Journal from "./pages/Journal";
 import Product from "./pages/Product";
+import Cart from "./pages/Cart";
+import { Checkout } from "./pages/Checkout";
+import { OrderConfirmation } from "./pages/OrderConfirmation";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Account from "./pages/Account";
+import OrderDetails from "./pages/OrderDetails";
 
 export default function App() {
   const location = useLocation();
@@ -20,6 +27,11 @@ export default function App() {
       "/shop": "Shop | TRONVOX",
       "/collections": "Collections | TRONVOX",
       "/journal": "Journal | TRONVOX",
+      "/cart": "Cart | TRONVOX",
+      "/checkout": "Checkout | TRONVOX",
+      "/login": "Login | TRONVOX",
+      "/register": "Register | TRONVOX",
+      "/account": "My Account | TRONVOX"
     };
     
     if (location.pathname.startsWith("/product/")) {
@@ -41,6 +53,13 @@ export default function App() {
           <Route path="/collections" element={<Collections />} />
           <Route path="/journal" element={<Journal />} />
           <Route path="/product/:id" element={<Product />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/account/orders/:id" element={<OrderDetails />} />
         </Routes>
       </main>
 

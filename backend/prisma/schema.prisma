@@ -147,7 +147,9 @@ model Address {
 
 model Order {
   id               String      @id @default(uuid())
+  orderNumber      String?
   userId           String
+  contactEmail     String?
   status           OrderStatus @default(PENDING)
   subtotal         Float
   shippingFee      Float
